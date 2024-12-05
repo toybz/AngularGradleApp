@@ -1,0 +1,41 @@
+plugins {
+    id 'com.github.node-gradle.node' version '7.0.1'
+
+}
+
+node {
+    version = '20.11.1'  // LTS version of Node.js
+    download = true
+    workDir = file("${project.buildDir}/nodejs")
+    npmWorkDir = file("${project.buildDir}/npm")
+}
+
+tasks.register('buildAngular') {
+    group = 'build'
+    description = 'Builds the Angular application'
+    
+    doLast {
+        project.exec {
+            workingDir = project.projectDir
+            commandLine = ['npm', 'run', 'build']
+        }
+    }
+}
+
+tasks.register('testAngular') {
+    group = 'verification'
+    description = 'Runs Angular tests'
+    
+    doLast {
+        project.exec {
+            workingDir = project.projectDir
+            commandLine = ['npm', 'run', 'test']
+        }
+    }
+}
+
+tasks.register('build') {
+    group = 'build'
+    description = 'Main build task that depends on buildAngular'
+    dependsOn('buildAngular')
+}
